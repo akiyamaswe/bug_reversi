@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'debug'
 class Position
   # マスを'f3','d6'などの表記で表現する。変数名cell_refとして取り扱う。
   COL = %w[a b c d e f g h].freeze
@@ -25,19 +25,20 @@ class Position
       @col = col
     else
       # Position.new('f7')のような呼び出し
+        #indexが入る
       @row = ROW.index(row_or_cell_ref[1])
       @col = COL.index(row_or_cell_ref[0])
     end
   end
-
+  #何も入っていなかったらnilで真を返す
   def invalid?
     row.nil? || col.nil?
   end
-
+  #ボードの範囲外（8かけ8マスの外）であれば真を変える
   def out_of_board?
     !((0..7).cover?(row) && (0..7).cover?(col))
   end
-
+  #ボード外でなければ、盤面内の石の配置の色の値を返す
   def stone_color(board)
     return nil if out_of_board?
 
