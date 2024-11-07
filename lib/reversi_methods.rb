@@ -49,11 +49,10 @@ module ReversiMethods
     #boardに記録された文字列をオブジェクトに、オブジェクトを文字列へ変更して変数に代入
     copied_board = Marshal.load(Marshal.dump(board))
     copied_board[pos.row][pos.col] = stone_color
-    #あらかじめfalseにしておく
+
     turn_succeed = false
     Position::DIRECTIONS.each do |direction|
       next_pos = pos.next_position(direction)
-      #turn_succeed = false if next_pos.stone_color(copied_board) == BLANK_CELL
       turn_succeed = true if turn(copied_board, next_pos, stone_color, direction)
     end
 
@@ -61,15 +60,14 @@ module ReversiMethods
 
     turn_succeed
   end
-  #                #隣の石
+
   def turn(board, target_pos, attack_stone_color, direction)
     return false if target_pos.out_of_board?
     return false if target_pos.stone_color(board) == attack_stone_color
     return false if target_pos.stone_color(board) == BLANK_CELL
-    #隣の隣の石
+
     next_pos = target_pos.next_position(direction)
     if (next_pos.stone_color(board) == attack_stone_color) || turn(board, next_pos, attack_stone_color, direction)
-      #次の次の石が配置した石と同じ色の石||directionの先に同じ色の石があれば、配置した石と同じ色に変える（turnの場合は入り込んだメソッドも全て変える）
       board[target_pos.row][target_pos.col] = attack_stone_color
       true
     else
@@ -84,12 +82,10 @@ module ReversiMethods
   def placeable?(board, attack_stone_color)
     board.each_with_index do |cols, row|
       cols.each_with_index do |cell, col|
-        #boardインスタンス変数に白か黒入ってたら次を実行しないで飛ばす
         next unless cell == BLANK_CELL
 
         position = Position.new(row, col)
         return true if put_stone(board, position.to_cell_ref, attack_stone_color, dry_run: true)
-        #                               #e3とかの盤面か'盤面外'
       end
     end
     return false
